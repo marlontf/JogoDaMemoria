@@ -3,85 +3,33 @@ const BACK = "card_back"
 const CARD = "card"
 const ICON = "icon"
 
-let techs = [
-   'bootstrap',
-   'css',
-   'electron',
-   'firebase',
-   'html',
-   'javascript',
-   'jquery',
-   'mongo',
-   'node',
-   'react'
-]
 
-let cards = null;
 
 startGame()
 
 function startGame() {
-   let cards = crateCardsFromTechs(techs)
-   shuffleCards(cards)
-   initializeCards(cards)
+   initializeCards(game.crateCardsFromTechs())
 }
 
-function shuffleCards(cards) {
-   let currentIndex = cards.length
-   let randomIndex = 0;
+function createCardContent(card, cardElement) {
 
-   while (currentIndex != 0) {
-      //Gerando um número aleatório MENOR que o índice atual
-      randomIndex = Math.floor(Math.random() * currentIndex)
-      currentIndex--
+   createCardFace(FRONT, card, cardElement)
+   createCardFace(BACK, card, cardElement)
 
-      //Invertendo valores do índice atual com o índice gerado
-      [cards[randomIndex], cards[currentIndex]] = [cards[currentIndex], cards[randomIndex]]
-   }
-}
-
-function crateCardsFromTechs() {
-   let cards = [];
-
-   techs.forEach((tech) => {
-      cards.push(createPairFromTech(tech))
-   })
-
-   return cards.flatMap(pair => pair);
-
-}
-
-function createPairFromTech(tech) {
-   return [
-      {
-         id: createIdWithTech(tech),
-         icon: tech,
-         flipped: false
-      },
-      {
-         id: createIdWithTech(tech),
-         icon: tech,
-         flipped: false
-      }
-   ]
-}
-
-function createIdWithTech(tech) {
-   return tech + parseInt(Math.random() * 1000)
 }
 
 function initializeCards(cards) {
 
    let gameBoard = document.querySelector('#gameBoard')
 
-   cards.forEach(card=>{
+   game.cards.forEach(card => {
       let cardElement = document.createElement('div')
       cardElement.id = card.id
       cardElement.classList.add(CARD)
       cardElement.dataset.icon = card.icon
 
       createCardContent(card, cardElement)
-      cardElement.addEventListener('click',flipCard)
+      cardElement.addEventListener('click', flipCard)
 
       gameBoard.appendChild(cardElement)
 
@@ -89,25 +37,18 @@ function initializeCards(cards) {
 
 }
 
-function createCardContent(card, cardElement){
-
-   createCardFace(FRONT, card, cardElement)
-   createCardFace(BACK, card, cardElement)
-
-}
-
-function createCardFace(face, card, element){
+function createCardFace(face, card, element) {
 
    let cardElementFace = document.createElement('div')
    cardElementFace.classList.add(face)
 
-   if(face == FRONT){
+   if (face == FRONT) {
       let iconElement = document.createElement('img')
       iconElement.classList.add(ICON)
       iconElement.src = "./assets/images/" + card.icon + ".png"
 
       cardElementFace.appendChild(iconElement)
-   }else{
+   } else {
       cardElementFace.innerHTML = "&lt/&gt"
    }
 
@@ -116,6 +57,6 @@ function createCardFace(face, card, element){
 }
 
 
-function flipCard(){
+function flipCard() {
    this.classList.add("flip")
 }
